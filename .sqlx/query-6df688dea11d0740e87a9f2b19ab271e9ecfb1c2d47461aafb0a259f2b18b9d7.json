@@ -1,0 +1,20 @@
+{
+  "db_name": "SQLite",
+  "query": "INSERT INTO tests (name, description, teacher, subject, year, files, extension) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id",
+  "describe": {
+    "columns": [
+      {
+        "name": "id",
+        "ordinal": 0,
+        "type_info": "Integer"
+      }
+    ],
+    "parameters": {
+      "Right": 7
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "6df688dea11d0740e87a9f2b19ab271e9ecfb1c2d47461aafb0a259f2b18b9d7"
+}

@@ -8,6 +8,7 @@ pub async fn upload(mut multipart: Multipart) -> impl IntoResponse {
     let mut files = Vec::new();
     let mut data = Upload {
         name: "".to_string(),
+        description: "".to_string(),
         teacher: "".to_string(),
         subject: "".to_string(),
         year: "".to_string(),
@@ -32,6 +33,9 @@ pub async fn upload(mut multipart: Multipart) -> impl IntoResponse {
             "name" => {
                 data.name = field.text().await.unwrap_or_default();
             }
+            "description" => {
+                data.description = field.text().await.unwrap_or_default();
+            }
             "teacher" => {
                 data.teacher = field.text().await.unwrap_or_default();
             }
@@ -44,17 +48,26 @@ pub async fn upload(mut multipart: Multipart) -> impl IntoResponse {
             _ => println!("Unknown field: {}", name),
         }
     }
-    if data.name.is_empty() || data.teacher.is_empty() || data.subject.is_empty() || data.year.is_empty() || files.is_empty() {
+    if data.name.is_empty() || data.description.is_empty() || data.teacher.is_empty() || data.subject.is_empty() || data.year.is_empty() || files.is_empty() {
         return (StatusCode::BAD_REQUEST, "All fields are required".to_string());
+    }
+    let mut last = files[0].0.clone();
+    for i in &files {
+        if i.0 != last {
+            return (StatusCode::BAD_REQUEST, "All files must be the same type.".to_string());
+        }
+        last = i.0.clone();
     }
     let files_len = files.len() as i64;
     let id = sqlx::query!(
-        "INSERT INTO tests (name, teacher, subject, year, files) VALUES (?, ?, ?, ?, ?) RETURNING id",
+        "INSERT INTO tests (name, description, teacher, subject, year, files, extension) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id",
         data.name,
+        data.description,
         data.teacher,
         data.subject,
         data.year,
-        files_len
+        files_len,
+        last
     ).fetch_one(&*crate::DB).await.unwrap();
     for i in 0..files_len {
         File::create(format!("files/{}_{}.{}", id.id, i, files[i as usize].0)).unwrap()

@@ -5,7 +5,8 @@ A web app to share exams to help others prepare and learn the style of teachers.
 ### Roadmap
 
 - [ ] Backend for uploads and search
-- [ ] A somewhat descent frontend for testing
+- [ ] A somewhat usable frontend for testing
+- [ ] Autocomplete for search and uploading
 - [ ] Authentication
 - [ ] Security against troll uploads and spam(admin utils)
 - [ ] A good frontend

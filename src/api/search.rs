@@ -11,6 +11,11 @@ pub async fn search(extract::Json(data): extract::Json<Search>) -> impl IntoResp
         query.push_bind(format!("%{}%", name));
     }
 
+    if let Some(description) = &data.description {
+        query.push(" AND description LIKE ");
+        query.push_bind(format!("%{}%", description));
+    }
+
     if let Some(teacher) = &data.teacher {
         query.push(" AND teacher LIKE ");
         query.push_bind(format!("%{}%", teacher));
@@ -30,10 +35,12 @@ pub async fn search(extract::Json(data): extract::Json<Search>) -> impl IntoResp
     let return_data: Vec<Test> = results.into_iter().map(|row| Test {
         id: row.get("id"),
         name: row.get("name"),
+        description: row.get("description"),
         teacher: row.get("teacher"),
         subject: row.get("subject"),
         year: row.get("year"),
         files: row.get("files"),
+        extension: row.get("extension"),
     }).collect();
     (StatusCode::OK, axum::Json(return_data))
 }

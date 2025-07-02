@@ -7,14 +7,44 @@
 </head>
 <body>
     <div class="upload">
-        <form action="/api/upload" method="post" enctype="multipart/form-data">
-            <input type="text" name="name" placeholder="Name" required>
-            <input type="text" min="3" max="3" name="teacher" placeholder="Lehrerkürzel" required>
-            <input type="text" name="subject" placeholder="Fachkürzel" required>
-            <input type="number" min="1950" max="2050" name="year" placeholder="Jahr" required>
-            <input type="file" name="files" accept=".jpg,.jpeg,.png" multiple required>
-            <input type="submit" value="Hochladen">
-        </form>
+        <input type="text" name="name" id="name" placeholder="Name" required>
+        <input type="text" name="description" id="description" placeholder="Beschreibung" required>
+        <input type="text" name="teacher" id="teacher" placeholder="Lehrer" required>
+        <input type="text" name="subject" id="subject" placeholder="Fach" required>
+        <input type="number" min="1950" max="2050" name="year" id="year" placeholder="Jahr" required>
+        <input type="file" name="files" id="files" accept=".jpg,.jpeg,.png" multiple required>
+        <button id="upload" onclick="upload()">Hochladen</button>
     </div>
 </body>
+<script defer>
+    const nameEl = document.getElementById("name");
+    const descriptionEl = document.getElementById("description");
+    const teacherEl = document.getElementById("teacher");
+    const subjectEl = document.getElementById("subject");
+    const yearEl = document.getElementById("year");
+    const filesEl = document.getElementById("files");
+
+    async function upload() {
+        const data = new FormData();
+        data.append("name", nameEl.value);
+        data.append("description", descriptionEl.value);
+        data.append("teacher", teacherEl.value);
+        data.append("subject", subjectEl.value);
+        data.append("year", yearEl.value);
+
+        var files = filesEl.files;
+        for (let i = 0; i < files.length; i++) {
+            data.append("files", files[i]);
+        }
+
+        const response = await fetch("/api/upload", {
+            method: "POST",
+            body: data
+        });
+
+        if (!response.ok) {
+            throw new Error(`Status: ${response.status}`);
+        }
+    }
+</script>
 </html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search</title>
+</head>
+<body>
+    <input type="text" name="name" id="name" placeholder="Name">
+    <input type="text" name="description" id="description" placeholder="Beschreibung">
+    <input type="text" name="teacher" id="teacher" placeholder="Lehrer">
+    <input type="text" name="subject" id="subject" placeholder="Fach">
+    <input type="number" min="1950" max="2050" name="year" id="year" placeholder="Jahr">
+    <button id="search" onclick="search()">Search</button>
+</body>
+<script defer>
+    const nameEl = document.getElementById("name");
+    const descriptionEl = document.getElementById("description");
+    const teacherEl = document.getElementById("teacher");
+    const subjectEl = document.getElementById("subject");
+    const yearEl = document.getElementById("year");
+
+    async function search() {
+        var data = {};
+        if (nameEl.value != "") {
+            data["name"] = nameEl.value;
+        }
+        if (descriptionEl.value != "") {
+            data["description"] = descriptionEl.value;
+        }
+        if (teacherEl.value != "") {
+            data["teacher"] = teacherEl.value;
+        }
+        if (subjectEl.value != "") {
+            data["subject"] = subjectEl.value;
+        }
+        if (yearEl.value != "") {
+            data["year"] = yearEl.value;
+        }
+
+        const response = await fetch("/api/search", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+            throw new Error(`Status: ${response.status}`);
+        }
+
+        const json = await response.json();
+        
+        for (let i = 0; i < json.length; i++) {
+            document.body.innerHTML += `<h1>Name: ${json[i]["name"]}</h1><p>Description: ${json[i]["description"]}</p><p>Teacher: ${json[i]["teachere"]}</p><p>Subject: ${json[i]["subject"]}</p><p>Year: ${json[i]["year"]}</p>`;
+            for (let j = 0; j < json[i]["files"]; j++) {
+                document.body.innerHTML += `<iframe src="/image/${json[i]["id"]}_${j}.${json[i]["extension"]}"></iframe>`;
+            }
+        }
+    }
+</script>
+</html>
