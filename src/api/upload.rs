@@ -1,6 +1,6 @@
 use std::{fs::File, io::Write, path::Path};
 
-use axum::{extract::Multipart, http::{header, StatusCode}, response::IntoResponse};
+use axum::{extract::Multipart, http::StatusCode, response::IntoResponse};
 
 use crate::api::datatypes::Upload;
 
@@ -60,5 +60,5 @@ pub async fn upload(mut multipart: Multipart) -> impl IntoResponse {
         File::create(format!("files/{}_{}.{}", id.id, i, files[i as usize].0)).unwrap()
             .write_all(&files[i as usize].1).unwrap();
     }
-    (StatusCode::TEMPORARY_REDIRECT, (header::LOCATION, "/"))
+    (StatusCode::OK, id.id.to_string())
 }

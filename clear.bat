@@ -1,0 +1,1 @@
+sqlite3 db.sqlite "DELETE FROM tests; DELETE FROM sqlite_sequence WHERE name='tests'"

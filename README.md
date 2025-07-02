@@ -9,3 +9,4 @@ A web app to share exams to help others prepare and learn the style of teachers.
 - [ ] Authentication
 - [ ] Security against troll uploads and spam(admin utils)
 - [ ] A good frontend
+- [ ] On page image editing to censor names
